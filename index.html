@@ -313,6 +313,92 @@
     display: block;
   }
 }
+
+/* ================= MOBILE RESPONSIVE FIX ================= */
+@media (max-width: 900px) {
+
+  /* ---------- NAV BAR ---------- */
+  nav {
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .nav-logo {
+    font-size: 1.5rem;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 7rem 1.2rem 3rem;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-card-stack {
+    transform: scale(0.9);
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2.4rem;
+  }
+
+  /* ---------- TRANSFORMATIONS ---------- */
+  #transformations .slide {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #transformations .slide-panel {
+    aspect-ratio: 1 / 1.2;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .bundles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-visual {
+    grid-template-columns: 1fr;
+  }
+
+  section {
+    padding: 4rem 1.2rem;
+  }
+
+  /* ---------- TABLE ---------- */
+  table {
+    font-size: 0.85rem;
+    overflow-x: auto;
+    display: block;
+  }
+}
 </style>
 </head>
 <body>
