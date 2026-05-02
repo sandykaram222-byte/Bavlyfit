@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bavly Karam – Personal Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #1A73E8;
+    --blue-light: #4D9FFF;
+    --blue-dark: #0D47A1;
+    --blue-glow: rgba(26,115,232,0.35);
+    --cyan: #00C8FF;
+    --dark: #0D1117;
+    --darker: #080C12;
+    --card: #111827;
+    --white: #FFFFFF;
+    --radius: 20px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--dark); color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* Apple emoji via Twemoji */
+  img.emoji {
+    height: 1em; width: 1em;
+    vertical-align: -0.1em;
+    display: inline-block;
+  }
+  .emoji-lg img.emoji { height: 2rem; width: 2rem; }
+  .emoji-xl img.emoji { height: 3rem; width: 3rem; }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.1rem 2.5rem;
+    background:rgba(8,12,18,0.93); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(26,115,232,0.2);
+  }
+  .nav-logo {
+    font-family:'Barlow Condensed',sans-serif; font-size:1.9rem;
+    font-weight:900; color:var(--blue); letter-spacing:3px; text-decoration:none;
+    text-transform:uppercase;
+  }
+  .nav-logo span { color:var(--white); }
+  nav ul { list-style:none; display:flex; gap:2rem; }
+  nav ul a {
+    color:rgba(255,255,255,0.75); text-decoration:none; font-weight:700;
+    font-size:0.85rem; letter-spacing:1.5px; text-transform:uppercase;
+    transition:color 0.2s; cursor:pointer;
+  }
+  nav ul a:hover { color:var(--blue-light); }
+  .nav-cta {
+    background:var(--blue); color:var(--white)!important;
+    padding:0.5rem 1.4rem; border-radius:50px;
+    transition:background 0.2s, box-shadow 0.2s!important;
+  }
+  .nav-cta:hover { background:var(--blue-light)!important; box-shadow:0 0 20px var(--blue-glow)!important; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:var(--card); border:1px solid rgba(26,115,232,0.4);
+    border-radius:var(--radius); padding:3rem 2.5rem; max-width:420px; width:90%;
+    text-align:center; animation:popIn 0.3s ease; position:relative;
+  }
+  @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-close { position:absolute; top:1rem; right:1.2rem; background:none; border:none; color:rgba(255,255,255,0.3); font-size:1.8rem; cursor:pointer; transition:color 0.2s; line-height:1; }
+  .modal-close:hover { color:var(--blue-light); }
+  .modal-box h3 { font-family:'Barlow Condensed',sans-serif; font-size:2.6rem; font-weight:900; color:var(--blue-light); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.3rem; }
+  .modal-box .sub { color:rgba(255,255,255,0.4); font-size:0.88rem; margin-bottom:2rem; }
+  .modal-item {
+    display:flex; align-items:center; gap:1rem;
+    background:rgba(26,115,232,0.07); border:1px solid rgba(26,115,232,0.2);
+    border-radius:14px; padding:1rem 1.2rem; margin-bottom:0.85rem;
+    text-decoration:none; color:var(--white); transition:border-color 0.2s, background 0.2s;
+  }
+  .modal-item:hover { border-color:var(--blue); background:rgba(26,115,232,0.15); }
+  .modal-item .ico { font-size:1.4rem; display:flex; align-items:center; }
+  .modal-item .info { text-align:left; }
+  .modal-item .type { font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); font-weight:700; }
+  .modal-item .val { font-size:0.95rem; font-weight:700; margin-top:2px; }
+
+  /* HERO */
+  .hero { min-height:100vh; display:flex; align-items:center; padding:8rem 2.5rem 4rem; position:relative; overflow:hidden; background:var(--darker); }
+  .hero-bg {
+    position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 55% 55% at 72% 50%, rgba(26,115,232,0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 35% at 15% 75%, rgba(0,200,255,0.1) 0%, transparent 60%);
+  }
+  .hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; max-width:1200px; margin:0 auto; width:100%; align-items:center; position:relative; z-index:1; }
+  .hero-tag {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:rgba(26,115,232,0.15); border:1px solid rgba(26,115,232,0.45);
+    color:var(--blue-light); font-size:0.78rem; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; padding:0.4rem 1rem; border-radius:50px;
+    margin-bottom:1.5rem; animation:fadeUp 0.6s ease both;
+  }
+  h1 {
+    font-family:'Barlow Condensed',sans-serif; font-weight:900;
+    font-size:clamp(4rem,7vw,7.5rem); line-height:0.92;
+    letter-spacing:2px; text-transform:uppercase;
+    animation:fadeUp 0.6s 0.1s ease both;
+  }
+  h1 .accent { color:var(--blue-light); }
+  h1 .cyan { color:var(--cyan); }
+  .hero-sub { margin:1.5rem 0 2.5rem; font-size:1.1rem; color:rgba(255,255,255,0.6); max-width:440px; line-height:1.7; animation:fadeUp 0.6s 0.2s ease both; }
+  .hero-buttons { display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp 0.6s 0.3s ease both; }
+  .btn { padding:0.9rem 2rem; border-radius:50px; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; transition:transform 0.15s, box-shadow 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; }
+  .btn-primary { background:var(--blue); color:var(--white); box-shadow:0 6px 28px var(--blue-glow); }
+  .btn-primary:hover { transform:translateY(-2px) scale(1.03); box-shadow:0 10px 40px rgba(26,115,232,0.6); }
+  .btn-outline { background:transparent; color:var(--white); border:2px solid rgba(255,255,255,0.2); }
+  .btn-outline:hover { border-color:var(--blue-light); color:var(--blue-light); transform:translateY(-2px); }
+
+  /* HERO VISUAL */
+  .hero-visual { display:flex; justify-content:center; align-items:center; animation:fadeUp 0.7s 0.2s ease both; }
+  .hero-card-stack { position:relative; width:320px; height:420px; }
+  .stat-blob { position:absolute; background:var(--card); border:1px solid rgba(26,115,232,0.3); border-radius:var(--radius); padding:1.2rem 1.6rem; text-align:center; animation:float 3.5s ease-in-out infinite; }
+  .stat-blob:nth-child(1){top:0;left:0;animation-delay:0s}
+  .stat-blob:nth-child(2){top:80px;right:0;animation-delay:0.8s}
+  .stat-blob:nth-child(3){bottom:40px;left:20px;animation-delay:1.6s}
+  .stat-blob .big { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:3rem; color:var(--blue-light); line-height:1; }
+  .stat-blob .label { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:1px; margin-top:0.2rem; }
+  .center-emblem {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:140px; height:140px; background:var(--blue); border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.1rem; letter-spacing:3px;
+    animation:pulse 2.5s ease-in-out infinite;
+  }
+  .center-emblem svg { margin-bottom:4px; }
+
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 40px rgba(26,115,232,0.5)}50%{box-shadow:0 0 90px rgba(26,115,232,0.85)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+  /* SHARED */
+  section { padding:6rem 2.5rem; }
+  .section-inner { max-width:1200px; margin:0 auto; }
+  .section-tag { display:inline-block; font-size:0.72rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--blue-light); margin-bottom:0.8rem; }
+  h2 { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.5rem,5vw,4.8rem); letter-spacing:2px; line-height:0.95; text-transform:uppercase; margin-bottom:1rem; }
+
+  /* SLIDER */
+  .slider-section { padding:5rem 2.5rem; background:var(--card); }
+  .slider-label { text-align:center; margin-bottom:2.5rem; }
+  .slider-wrap { max-width:860px; margin:0 auto; position:relative; }
+  .slider-viewport { overflow:hidden; border-radius:var(--radius); }
+  .slider-track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); }
+  .slide { min-width:100%; display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; padding:0.2rem; }
+  .slide-panel {
+    border-radius:18px; aspect-ratio:3/4; position:relative; overflow:hidden;
+    border:2px dashed rgba(26,115,232,0.3); background:rgba(26,115,232,0.04);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:0.7rem; text-align:center;
+  }
+  .slide-panel .ph-icon { font-size:3rem; opacity:0.2; display:flex; }
+  .slide-panel .ph-text { font-size:0.75rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.22); }
+  .slide-tag {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    font-family:'Barlow Condensed',sans-serif; font-weight:800;
+    font-size:0.75rem; letter-spacing:2px; text-transform:uppercase;
+    padding:0.3rem 1rem; border-radius:50px; white-space:nowrap;
+  }
+  .tag-before { background:rgba(0,0,0,0.6); color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.12); }
+  .tag-after  { background:var(--blue); color:#fff; box-shadow:0 0 14px var(--blue-glow); }
+  .slider-arrows { display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-top:2rem; }
+  .arrow-btn {
+    width:52px; height:52px; border-radius:50%; border:2px solid rgba(26,115,232,0.45);
+    background:transparent; color:var(--blue-light); font-size:1.4rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s, border-color 0.2s, transform 0.15s;
+  }
+  .arrow-btn:hover { background:var(--blue); color:#fff; border-color:var(--blue); transform:scale(1.1); }
+  .slider-dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.18); border:none; cursor:pointer; transition:background 0.3s, transform 0.2s; padding:0; }
+  .dot.active { background:var(--blue-light); transform:scale(1.35); }
+  .client-name { text-align:center; margin-top:1.2rem; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.4rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+  .photos-hint { text-align:center; margin-top:1rem; color:rgba(255,255,255,0.18); font-size:0.75rem; font-style:italic; }
+
+  /* BUNDLES */
+  #services { background:var(--dark); }
+  .bundles-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:3.5rem; }
+  .bundle-card { background:var(--card); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); padding:2.5rem 2rem; transition:border-color 0.25s, transform 0.25s; position:relative; }
+  .bundle-card:hover { transform:translateY(-6px); }
+  .bundle-card.featured { border-color:var(--blue); box-shadow:0 0 40px rgba(26,115,232,0.15); }
+  .bundle-badge { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--blue); color:var(--white); font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; padding:0.3rem 1.2rem; border-radius:50px; white-space:nowrap; }
+  .bundle-icon { font-size:2.4rem; margin-bottom:1rem; display:flex; }
+  .bundle-card h3 { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:2.4rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:0.4rem; }
+  .bundle-price { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:3.8rem; color:var(--blue-light); line-height:1; margin-bottom:0.3rem; }
+  .bundle-price span { font-family:'Barlow',sans-serif; font-size:0.85rem; color:rgba(255,255,255,0.35); font-weight:600; }
+  .bundle-desc { font-size:0.92rem; color:rgba(255,255,255,0.5); margin-bottom:1.5rem; line-height:1.65; }
+  .bundle-features { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; }
+  .bundle-features li { display:flex; align-items:center; gap:0.6rem; font-size:0.95rem; }
+  .bundle-features li::before { content:'✓'; color:var(--blue-light); font-weight:800; font-size:1rem; flex-shrink:0; }
+  .bundle-btn { display:block; width:100%; padding:0.9rem; border-radius:50px; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; text-align:center; transition:transform 0.15s, box-shadow 0.2s; }
+  .bundle-btn-primary { background:var(--blue); color:var(--white); box-shadow:0 6px 28px var(--blue-glow); }
+  .bundle-btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 40px rgba(26,115,232,0.6); }
+  .bundle-btn-outline { background:transparent; color:var(--white); border:2px solid rgba(255,255,255,0.18); }
+  .bundle-btn-outline:hover { border-color:var(--blue-light); color:var(--blue-light); }
+
+  /* ABOUT */
+  #why { background:var(--card); }
+  .why-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; margin-top:3rem; }
+  .why-list { list-style:none; display:flex; flex-direction:column; gap:1.5rem; }
+  .why-item { display:flex; gap:1rem; align-items:flex-start; }
+  .why-bullet { width:36px; height:36px; min-width:36px; border-radius:50%; background:rgba(26,115,232,0.15); border:1.5px solid rgba(26,115,232,0.45); color:var(--blue-light); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; margin-top:2px; }
+  .why-item h4 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:0.25rem; }
+  .why-item p { font-size:0.9rem; color:rgba(255,255,255,0.5); line-height:1.6; }
+  .why-visual { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .why-stat { background:var(--dark); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); padding:1.8rem 1.5rem; text-align:center; }
+  .why-stat .num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:3.4rem; color:var(--blue-light); line-height:1; }
+  .why-stat .desc { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; margin-top:0.3rem; }
+  .why-stat.accent { background:var(--blue); border-color:var(--blue); box-shadow:0 0 30px var(--blue-glow); }
+  .why-stat.accent .num { color:var(--white); }
+  .why-stat.accent .desc { color:rgba(255,255,255,0.65); }
+
+  /* SCHEDULE */
+  #schedule { background:var(--dark); }
+  .schedule-table { margin-top:3rem; width:100%; border-collapse:collapse; font-size:0.95rem; }
+  .schedule-table th { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-light); text-align:left; padding:0.8rem 1.2rem; border-bottom:1px solid rgba(26,115,232,0.3); }
+  .schedule-table td { padding:1rem 1.2rem; border-bottom:1px solid rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); }
+  .schedule-table tr:hover td { background:rgba(26,115,232,0.06); }
+  .badge { display:inline-block; padding:0.25rem 0.7rem; border-radius:50px; font-size:0.72rem; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; }
+  .badge-blue   { background:rgba(26,115,232,0.2); color:var(--blue-light); }
+  .badge-cyan   { background:rgba(0,200,255,0.12); color:var(--cyan); }
+  .badge-white  { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); }
+
+  /* CTA */
+  #contact { background:var(--blue); text-align:center; }
+  #contact h2 { color:var(--white); }
+  #contact p { color:rgba(255,255,255,0.8); font-size:1.05rem; max-width:500px; margin:1rem auto 2.5rem; }
+  .btn-white { background:var(--white); color:var(--blue-dark); font-weight:800; }
+  .btn-white:hover { background:var(--cyan); color:var(--darker); transform:translateY(-2px); }
+
+  /* FOOTER */
+  footer { background:var(--darker); text-align:center; padding:2.5rem; font-size:0.85rem; color:rgba(255,255,255,0.25); border-top:1px solid rgba(255,255,255,0.05); }
+  footer strong { color:var(--blue-light); }
+</style>
+</head>
+<body>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>Let's Talk</h3>
+    <p class="sub">Reach out and Bavly will get back to you fast</p>
+    <a class="modal-item" href="tel:+201227199039">
+      <span class="ico">📞</span>
+      <div class="info"><div class="type">Phone</div><div class="val">01227199039</div></div>
+    </a>
+    <a class="modal-item" href="mailto:pavlykaram62@gmail.com">
+      <span class="ico">✉️</span>
+      <div class="info"><div class="type">Email</div><div class="val">pavlykaram62@gmail.com</div></div>
+    </a>
+    <a class="modal-item" href="https://wa.me/201227199039" target="_blank">
+      <span class="ico">💬</span>
+      <div class="info"><div class="type">WhatsApp</div><div class="val">Message me on WhatsApp</div></div>
+    </a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>BAVLY</span> FIT</a>
+  <ul>
+    <li><a onclick="goTo('services')">Services</a></li>
+    <li><a onclick="goTo('why')">About</a></li>
+    <li><a onclick="goTo('schedule')">Schedule</a></li>
+    <li><a onclick="openModal()" class="nav-cta">Contact Me</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag">🔥 Personal Training &amp; Coaching</div>
+      <h1>TRAIN<br><span class="accent">HARDER.</span><br>LIVE <span class="cyan">BETTER.</span></h1>
+      <p class="hero-sub">Results-driven personal coaching by <strong>Bavly Karam</strong> — tailored workout plans, nutrition, and full support to build your best body.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary" onclick="openModal()">Start Your Journey 🚀</button>
+        <button class="btn btn-outline" onclick="goTo('services')">See Bundles</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="stat-blob"><div class="big">100+</div><div class="label">Clients Transformed</div></div>
+        <div class="stat-blob"><div class="big">2+</div><div class="label">Years Coaching</div></div>
+        <div class="stat-blob"><div class="big">5★</div><div class="label">Client Rating</div></div>
+        <div class="center-emblem">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+            <rect x="1" y="14" width="5" height="8" rx="2" fill="white"/>
+            <rect x="30" y="14" width="5" height="8" rx="2" fill="white"/>
+            <rect x="7" y="10" width="4" height="16" rx="2" fill="white"/>
+            <rect x="25" y="10" width="4" height="16" rx="2" fill="white"/>
+            <rect x="12" y="16" width="12" height="4" rx="2" fill="white"/>
+          </svg>
+          BAVLY
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFORMATION SLIDER -->
+<div class="slider-section" id="transformations">
+  <div class="slider-label">
+    <span class="section-tag">Client Results</span>
+    <h2>Before &amp; After</h2>
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-viewport">
+      <div class="slider-track" id="sliderTrack">
+
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 1 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 1 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 2 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 2 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 3 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 3 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 4 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 4 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 5 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 5 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+        <div class="slide">
+          <div class="slide-panel"><div class="ph-icon">📸</div><div class="ph-text">Client 6 Photo</div><span class="slide-tag tag-before">Before</span></div>
+          <div class="slide-panel"><div class="ph-icon">💪</div><div class="ph-text">Client 6 Photo</div><span class="slide-tag tag-after">After</span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="client-name" id="clientName">Client 1</div>
+    <div class="slider-arrows">
+      <button class="arrow-btn" onclick="slideMove(-1)">&#8592;</button>
+      <div class="slider-dots" id="sliderDots"></div>
+      <button class="arrow-btn" onclick="slideMove(1)">&#8594;</button>
+    </div>
+    <p class="photos-hint">← Add your clients' real before &amp; after photos here →</p>
+  </div>
+</div>
+
+<!-- BUNDLES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-tag">What I Offer</div>
+    <h2>Choose Your Bundle</h2>
+    <p style="color:rgba(255,255,255,0.45);font-size:1rem;margin-top:0.5rem;">Two clear paths. One goal — your transformation.</p>
+    <div class="bundles-grid">
+      <div class="bundle-card">
+        <div class="bundle-icon">⚡</div>
+        <h3>Starter Bundle</h3>
+        <div class="bundle-price">300 <span>L.E / month</span></div>
+        <p class="bundle-desc">Everything you need to kick off your fitness journey with professional guidance and a structured plan.</p>
+        <ul class="bundle-features">
+          <li>Personalised workout plan</li>
+          <li>Full nutrition plan</li>
+          <li>Weekly contact &amp; check-in</li>
+          <li>Progress tracking</li>
+        </ul>
+        <button class="bundle-btn bundle-btn-outline" onclick="openModal()">Get Started →</button>
+      </div>
+      <div class="bundle-card featured">
+        <div class="bundle-badge">⭐ Most Popular</div>
+        <div class="bundle-icon">🔥</div>
+        <h3>One to One</h3>
+        <div class="bundle-price">600 <span>L.E / month</span></div>
+        <p class="bundle-desc">The full premium experience — daily access to Bavly, a completely custom plan and meal support built around your life.</p>
+        <ul class="bundle-features">
+          <li>Personalised workout plan</li>
+          <li>Full nutrition plan</li>
+          <li>Custom daily meal plan</li>
+          <li>Daily contact &amp; support</li>
+          <li>Priority response anytime</li>
+          <li>Weekly plan adjustments</li>
+        </ul>
+        <button class="bundle-btn bundle-btn-primary" onclick="openModal()">Book One to One →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="why">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div>
+        <div class="section-tag">About Bavly</div>
+        <h2>Results That Speak For Themselves</h2>
+        <ul class="why-list" style="margin-top:2.5rem;">
+          <li class="why-item">
+            <div class="why-bullet">✓</div>
+            <div><h4>Certified &amp; Passionate</h4><p>2+ years of dedicated coaching with 100+ clients transformed — every single one matters to me personally.</p></div>
+          </li>
+          <li class="why-item">
+            <div class="why-bullet">✓</div>
+            <div><h4>Plans Built Just for YOU</h4><p>No copy-paste programs. Every workout and meal plan is designed specifically around your goals and lifestyle.</p></div>
+          </li>
+          <li class="why-item">
+            <div class="why-bullet">✓</div>
+            <div><h4>Always Available</h4><p>Whether weekly or daily, I'm with you every step — answering questions, adjusting plans, keeping you accountable.</p></div>
+          </li>
+          <li class="why-item">
+            <div class="why-bullet">✓</div>
+            <div><h4>Nutrition + Training Together</h4><p>Real results come from combining smart training with proper nutrition — I cover both so you never have to guess.</p></div>
+          </li>
+        </ul>
+      </div>
+      <div class="why-visual">
+        <div class="why-stat accent"><div class="num">100+</div><div class="desc">Lives Changed</div></div>
+        <div class="why-stat"><div class="num">2+</div><div class="desc">Years Coaching</div></div>
+        <div class="why-stat"><div class="num">2</div><div class="desc">Bundles Available</div></div>
+        <div class="why-stat"><div class="num">5★</div><div class="desc">Client Rating</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="section-inner">
+    <div class="section-tag">Availability</div>
+    <h2>Weekly Schedule</h2>
+    <table class="schedule-table">
+      <thead><tr><th>Day</th><th>Morning</th><th>Afternoon</th><th>Evening</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Monday</strong></td><td><span class="badge badge-blue">6am – 10am</span></td><td>—</td><td><span class="badge badge-blue">5pm – 9pm</span></td></tr>
+        <tr><td><strong>Tuesday</strong></td><td><span class="badge badge-blue">6am – 10am</span></td><td><span class="badge badge-cyan">12pm – 2pm</span></td><td><span class="badge badge-blue">5pm – 9pm</span></td></tr>
+        <tr><td><strong>Wednesday</strong></td><td><span class="badge badge-blue">6am – 10am</span></td><td>—</td><td><span class="badge badge-blue">5pm – 9pm</span></td></tr>
+        <tr><td><strong>Thursday</strong></td><td><span class="badge badge-blue">6am – 10am</span></td><td><span class="badge badge-cyan">12pm – 2pm</span></td><td><span class="badge badge-blue">5pm – 9pm</span></td></tr>
+        <tr><td><strong>Friday</strong></td><td><span class="badge badge-blue">6am – 10am</span></td><td>—</td><td><span class="badge badge-white">5pm – 7pm</span></td></tr>
+        <tr><td><strong>Saturday</strong></td><td><span class="badge badge-blue">7am – 12pm</span></td><td>—</td><td>—</td></tr>
+        <tr><td><strong>Sunday</strong></td><td colspan="3" style="color:rgba(255,255,255,0.28);font-style:italic;">Rest Day — Recovery is part of the program 😴</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact">
+  <div class="section-inner">
+    <h2>Ready to Start?</h2>
+    <p>Book a free consultation with Bavly and let's map out your transformation. No pressure — just real results.</p>
+    <button class="btn btn-white" onclick="openModal()">Contact Me Now 💬</button>
+  </div>
+</section>
+
+<footer>
+  <strong>Bavly Karam – Personal Trainer</strong> &nbsp;·&nbsp; 01227199039 &nbsp;·&nbsp; pavlykaram62@gmail.com &nbsp;·&nbsp; © 2025
+</footer>
+
+<script>
+  // Run Twemoji to convert all emoji to Apple-style images
+  twemoji.parse(document.body, {
+    folder: 'svg', ext: '.svg',
+    base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/'
+  });
+
+  // Modal
+  function openModal() {
+    document.getElementById('contactModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('contactModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('contactModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  function goTo(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Slider
+  const clientNames = ['Client 1','Client 2','Client 3','Client 4','Client 5','Client 6'];
+  const track = document.getElementById('sliderTrack');
+  const dotsContainer = document.getElementById('sliderDots');
+  const nameEl = document.getElementById('clientName');
+  const total = clientNames.length;
+  let current = 0, timer;
+
+  clientNames.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => { goSlide(i); resetTimer(); };
+    dotsContainer.appendChild(d);
+  });
+
+  function updateSlider() {
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    nameEl.textContent = clientNames[current];
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i === current));
+  }
+  function goSlide(n) { current = (n + total) % total; updateSlider(); }
+  function slideMove(dir) { goSlide(current + dir); resetTimer(); }
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goSlide(current + 1), 3000);
+  }
+
+  updateSlider();
+  resetTimer();
+</script>
+</body>
+</html>
